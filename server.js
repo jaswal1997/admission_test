@@ -14,7 +14,7 @@ let scores = JSON.parse(fs.readFileSync('scores.json', 'utf-8'));
 
 // Registration route
 app.post('/register', (req, res) => {
-    const { username, password } = req.body;
+    const { username, password ,contact, name, email } = req.body;
 
     // Check if user exists
     if (users.some(user => user.username === username)) {
@@ -22,9 +22,9 @@ app.post('/register', (req, res) => {
     }
 
     // Register new user
-    users.push({ username, password });
-    fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
-    res.send('Registration successful!');
+    users.push({ username, password, contact, name, email });
+    fs.writeFileSync('users.json', JSON.stringify(users, null, 5));
+    res.redirect('login.html')
 });
 
 // Login route
