@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructions</title>
+</head>
+<body>
+    <h2>Welcome <span id="usernameDisplay"></span>!</h2>
+    <p>Instructions for the exam:</p>
+    <ul>
+        <li>Answer each question one by one.</li>
+        <li>Your score will be displayed after submission.</li>
+    </ul>
+    <button onclick="startExam()">Start Exam</button>
+
+    <script>
+        // Get username from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        document.getElementById('usernameDisplay').textContent = username;
+
+        // Redirect to exam page
+        function startExam() {
+            window.location.href = `/examportal.html?username=${username}`;
+        }
+    </script>
+</body>
+</html>

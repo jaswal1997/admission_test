@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Portal</title>
+</head>
+<body>
+    <h2>Welcome to the Exam Portal, <span id="usernameDisplay"></span>!</h2>
+    <div id="questionContainer"></div>
+    <button id="nextQuestionBtn" onclick="nextQuestion()">Next Question</button>
+
+    <script>
+        // Get the username from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        document.getElementById('usernameDisplay').textContent = username;
+
+        const questions = [
+            { question: "What is 2 + 2?", options: ["2", "3", "4", "5"], answer: "4" },
+            { question: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Madrid"], answer: "Paris" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Show the first question
+        function showQuestion() {
+            const questionContainer = document.getElementById('questionContainer');
+            const questionData = questions[currentQuestionIndex];
+
+            let questionHTML = `<h3>${questionData.question}</h3>`;
+            questionData.options.forEach(option => {
+                questionHTML += `<input type="radio" name="option" value="${option}">${option}<br>`;
+            });
+            questionContainer.innerHTML = questionHTML;
+        }
+
+        // Show next question or submit exam if last question
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption && selectedOption.value === questions[currentQuestionIndex].answer) {
+                score += 50; // Award 50 points per correct answer
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                submitExam();
+            }
+        }
+
+        // Submit exam and send score to the server
+        function submitExam() {
+            fetch('/submit_exam', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `username=${username}&score=${score}`
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+                window.location.href = 'login.html'; // Redirect to login after submission
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Show the first question when the page loads
+        showQuestion();
+    </script>
+</body>
+</html>
